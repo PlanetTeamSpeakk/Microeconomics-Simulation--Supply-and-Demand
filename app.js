@@ -2,6 +2,8 @@ RunSimulationBtn.addEventListener("click", StartMarket);
 BuyersDisplayFilter.addEventListener("change", DisplayOutput);
 SellersDisplayFilter.addEventListener("change", DisplayOutput);
 
+var currentChart;
+
 // show data about the market
 function DisplayOutput() {
 
@@ -137,7 +139,8 @@ function MakeGraph() {
 
     let ctx = SellersChartCanvas;
 
-    let SellersChart = new Chart(ctx, {
+    if (currentChart) currentChart.destroy();
+    currentChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: CategoryNames,
