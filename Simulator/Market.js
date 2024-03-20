@@ -36,11 +36,17 @@ function GetAveragePrice() {
     return Math.round(Total / Sellers.length);
 }
 
+function GetHistory(index) {
+    return Sellers[index].PriceHistory;
+}
+
 function GetMedianFirstPrice() {
     Sellers.sort((a, b) => a.FirstPrice - b.FirstPrice);
 
     let Median;
-    if (Sellers.length % 2 == 0) Median = (Sellers[(Sellers.length / 2)].FirstPrice + Sellers[(Sellers.length / 2) + 1].FirstPrice) / 2;
+    if (Sellers.length % 2 == 0 && Sellers.length > 2) Median = (Sellers[(Sellers.length / 2)].FirstPrice + Sellers[(Sellers.length / 2) + 1].FirstPrice) / 2;
+    else if (Sellers.length == 2) Median = (Sellers[0].FirstPrice + Sellers[1].FirstPrice) / 2;
+    else if (Sellers.length == 1) Median = Sellers[0].FirstPrice;
     else Median = Sellers[Math.ceil(Sellers.length / 2)].FirstPrice;
 
     return Math.round(Median);
@@ -50,7 +56,9 @@ function GetMedianPrice() {
     Sellers.sort((a, b) => a.Price - b.Price);
 
     let Median;
-    if (Sellers.length % 2 == 0) Median = (Sellers[(Sellers.length / 2)].Price + Sellers[(Sellers.length / 2) + 1].Price) / 2;
+    if (Sellers.length % 2 == 0 && Sellers.length > 2) Median = (Sellers[(Sellers.length / 2)].Price + Sellers[(Sellers.length / 2) + 1].Price) / 2;
+    else if (Sellers.length == 2) Median = (Sellers[0].Price + Sellers[1].Price) / 2;
+    else if (Sellers.length == 1) Median = Sellers[0].Price;
     else Median = Sellers[Math.ceil(Sellers.length / 2)].Price;
 
     return Math.round(Median);
@@ -66,7 +74,7 @@ function StartMarket() {
     InitializeVariables();
 
     //create a worker to do the trading
-    let TradeWorker = new Worker("Simulator/Trade.js");
+    let TradeWorker = new Worker("Simulator/Trade.js?12");
     TradeWorker.postMessage({
         NumberOfBuyers: NumberOfBuyers,
         NumberOfSellers: NumberOfSellers,

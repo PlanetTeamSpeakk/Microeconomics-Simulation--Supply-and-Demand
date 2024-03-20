@@ -17,6 +17,6 @@ class Buyer {
     }
 
     static GetRandomAmount() {
-        return Math.round(Math.random() * 150);
+        return Math.round(Math.random() * 50);
     }
 }

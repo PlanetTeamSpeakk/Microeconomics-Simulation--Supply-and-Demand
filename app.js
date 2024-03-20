@@ -3,6 +3,7 @@ BuyersDisplayFilter.addEventListener("change", DisplayOutput);
 SellersDisplayFilter.addEventListener("change", DisplayOutput);
 
 var currentChart;
+var SellerPriceHistoryChart;
 
 // show data about the market
 function DisplayOutput() {
@@ -118,12 +119,12 @@ function MakeGraph() {
 
     let Highest = Sellers[0][SellersDisplayFilter.value];
 
-    let Width = Math.ceil(Highest / 10);
+    let Width = Math.ceil(Highest / 40);
     
     let CategoryNames = [];
     let CategoriesData = [];
 
-    for (let i = 0; i < 10; i++) CategoriesData.push(0);
+    for (let i = 0; i < 40; i++) CategoriesData.push(0);
 
     let Category = 0;
     for (let i = 0; i < Highest; i += Width) {
@@ -137,36 +138,31 @@ function MakeGraph() {
     SellersChartCanvas.width = screen.width * 0.8;
     SellersChartCanvas.height = screen.height * 0.7;
 
+    SellersPriceHistoryCanvas.width = screen.width * 0.8;
+    SellersPriceHistoryCanvas.height = screen.height * 0.7;
+
     let ctx = SellersChartCanvas;
+    let ctx2 = SellersPriceHistoryCanvas;
+
+    let colors = [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)'
+    ];
 
     if (currentChart) currentChart.destroy();
     currentChart = new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: {
             labels: CategoryNames,
             datasets: [{
                 label: 'Sellers',
                 data: CategoriesData,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)',
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
+                backgroundColor: 'rgba(255, 99, 132, 1)',
+                borderColor: 'rgba(255, 99, 132, 1)',
                 borderWidth: 1
             }]
         },
@@ -177,6 +173,38 @@ function MakeGraph() {
                         beginAtZero: true
                     }
                 }]
+            },
+            responsive: false
+        }
+    });
+
+
+
+    if (SellerPriceHistoryChart) SellerPriceHistoryChart.destroy();
+    SellerPriceHistoryChart = new Chart(ctx2, {
+        type: 'line',
+        data: {
+            labels: Array.from(Array(RoundsOfTrading).keys()),
+            datasets: Sellers.map(seller => {
+                return {
+                    label: `Seller ${seller.Position}`,
+                    data: seller.PriceHistory,
+                    fill: false,
+                    borderColor: colors[seller.Position  % colors.length],
+                    tension: 0.1
+                }
+            })
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+            legend: {
+                display: false
             },
             responsive: false
         }
