@@ -5,11 +5,10 @@ let Buyers = [];
 let Sellers = [];
 let Transactions = 0;
 
-self.importScripts("Buyer.js?5", "Seller.js?9");
+self.importScripts("Buyer.js?5", "Seller.js?9", "OutsideInfluence.js");
 
 // buyer and seller attempt to do a transction
 function Trade(Rounds, HowToChooseSeller) {
-
     for (let Round = 0; Round < Rounds; Round++) {
         Buyers.forEach(buyer => {
             let seller;

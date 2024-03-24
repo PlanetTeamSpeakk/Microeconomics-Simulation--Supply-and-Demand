@@ -5,6 +5,7 @@ let RoundsOfTrading = GetNumberOfTradingRounds();
 
 let Buyers = [];
 let Sellers = [];
+let Influences = [];
 
 let Transactions = 0;
 
@@ -17,6 +18,7 @@ function InitializeVariables() {
 
     Buyers = [];
     Sellers = [];
+    Influences = [];
 }
 
 
@@ -65,7 +67,6 @@ function GetMedianPrice() {
 }
 
 function StartMarket() {
-
     RunSimulationBtn.style.visibility = "hidden";
     RunSimulationBtn.removeEventListener("click", StartMarket);
     OutputDivStatus.style.visibility = "visible";

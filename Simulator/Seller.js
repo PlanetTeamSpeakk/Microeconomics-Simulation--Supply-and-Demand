@@ -1,5 +1,4 @@
 class Seller {
-
     MinimumAcceptable; // the minimum price a seller can accept for the commodity (production cost)
     FirstPrice; // the price this seller entered the market with
     PriceHistory = []; // all prices the seller has posted since opening of market
@@ -49,6 +48,7 @@ class Seller {
     static GetRandomPrice(ProductionCost) {
         return Math.round(ProductionCost * (1 + Math.random())); // selling price must be above cost
     }
+
     static GetRandomCost() {
         return Math.round(Math.random() * 10) + 5;
     }
