@@ -75,7 +75,7 @@ function StartMarket() {
     InitializeVariables();
 
     //create a worker to do the trading
-    let TradeWorker = new Worker("Simulator/Trade.js?12");
+    let TradeWorker = new Worker("Simulator/Trade.js");
     TradeWorker.postMessage({
         NumberOfBuyers: NumberOfBuyers,
         NumberOfSellers: NumberOfSellers,

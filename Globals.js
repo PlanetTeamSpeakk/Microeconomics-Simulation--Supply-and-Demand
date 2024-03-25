@@ -14,6 +14,7 @@ const OutputDivStatus = document.getElementById("OutputDivStatus");
 const OutputDivData = document.getElementById("OutputDivData");
 const SellersChartCanvas = document.getElementById("SellersChartCanvas");
 const SellersPriceHistoryCanvas = document.getElementById("SellersPriceHistoryCanvas");
+const BuyersChartCanvas = document.getElementById("BuyersChartCanvas");
 const test = document.getElementById("test");
 
 function GetNumberOfBuyers() {

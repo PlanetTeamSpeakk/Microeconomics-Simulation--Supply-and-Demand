@@ -13,25 +13,25 @@ class Seller {
 
     // how much the seller will adjust price depending on how the market is
     PriceAdjustmentFactor = {
-        Up: (21/20),
-        Down: (20/21)
+        Up: 0.1,
+        Down: -0.1
     }
 
-    constructor() {
+    constructor(price) {
         this.MinimumAcceptable = Seller.GetRandomCost();
-        this.Price = Seller.GetRandomPrice(this.MinimumAcceptable);
-        this.FirstPrice = this.Price;
+        this.Price = price;
+        this.FirstPrice = price;
         this.PriceHistory.push(this.Price);
     }
 
     AdjustPrice() {
         if (this.MadeSale) {
             // price adjusted upwards if the previous transaction was successful
-            this.Price *= this.PriceAdjustmentFactor.Up;
+            this.Price += this.PriceAdjustmentFactor.Up;
         } else {
             // price adjusted downwards if the previous transaction was not successful
-            if (this.Price * this.PriceAdjustmentFactor.Down < this.MinimumAcceptable) this.Price = this.MinimumAcceptable;
-            else this.Price *= this.PriceAdjustmentFactor.Down;
+            if (this.Price + this.PriceAdjustmentFactor.Down < this.MinimumAcceptable) this.Price = this.MinimumAcceptable;
+            else this.Price += this.PriceAdjustmentFactor.Down;
         }
         this.PriceHistory.push(this.Price);
     }
