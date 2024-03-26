@@ -4,7 +4,7 @@ let NumberOfBuyers, NumberOfSellers;
 let Buyers = [];
 let Sellers = [];
 let Transactions = 0;
-const startingPrice = 15;
+const startingPrice = 100;
 
 self.importScripts("Buyer.js", "Seller.js", "OutsideInfluence.js");
 
@@ -16,6 +16,7 @@ function Trade(Rounds, HowToChooseSeller) {
 }
 
 function MarketIteration1() {
+    Sellers = Shuffle(Sellers);
     Shuffle(Buyers).forEach(buyer => {
         for (let i = 0; i < Sellers.length; i++) {
             let seller = Sellers[i];

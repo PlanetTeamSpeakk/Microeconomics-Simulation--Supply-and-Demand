@@ -13,8 +13,8 @@ class Seller {
 
     // how much the seller will adjust price depending on how the market is
     PriceAdjustmentFactor = {
-        Up: 0.1,
-        Down: -0.1
+        Up: 1,
+        Down: -1
     }
 
     constructor(price) {
@@ -50,6 +50,6 @@ class Seller {
     }
 
     static GetRandomCost() {
-        return Math.round(Math.random() * 10) + 5;
+        return Math.round(Math.random() * 100);
     }
 }

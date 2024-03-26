@@ -1,5 +1,8 @@
-class Buyer {
+// Description: This file contains the Buyer class which represents a buyer in the market.
 
+const absoluteMaximumPayable = 100; // the maximum price a buyer can pay for the commodity
+
+class Buyer {
     MaximumPayable; // the maximum price a buyer can pay for the commodity
     expectedPrice; // the price the buyer expects to pay for the commodity
     expectedPriceHistory = []; // all prices the buyer has expected to pay since opening of market
@@ -11,8 +14,8 @@ class Buyer {
 
     // how much the seller will adjust price depending on how the market is
     PriceAdjustmentFactor = {
-        Up: 0.1,
-        Down: -0.1
+        Up: 1,
+        Down: -1
     }
 
     constructor(price) {
@@ -45,6 +48,6 @@ class Buyer {
     }
 
     static GetRandomAmount() {
-        return Math.round(Math.random() * 50);
+        return Math.round(Math.random() * absoluteMaximumPayable);
     }
 }
