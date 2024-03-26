@@ -1,6 +1,7 @@
 RunSimulationBtn.addEventListener("click", StartMarket);
 BuyersDisplayFilter.addEventListener("change", DisplayOutput);
 SellersDisplayFilter.addEventListener("change", DisplayOutput);
+DisplayChartSelect.addEventListener("change", DisplayOutput);
 
 var currentChart;
 var SellerPriceHistoryChart;
@@ -190,26 +191,131 @@ function MakeGraph() {
         }
     });
 
-    let sellerPriceHistoryLines = Sellers.map(seller => {
-        return {
-            label: `Seller ${seller.Position}`,
-            data: seller.PriceHistory,
+    // display custom charts
+    let sellerPriceHistoryLines;
+    let buyerPriceHistoryLines;
+
+    if (WhichChart() == "PriceHistory") {
+        sellerPriceHistoryLines = Sellers.map(seller => {
+            return {
+                label: `Seller ${seller.Position}`,
+                data: seller.PriceHistory,
+                fill: false,
+                borderColor: shades[seller.Position  % colors.length],
+                tension: 0.1
+            }
+        });
+        sellerPriceHistoryLines.unshift({
+            label: "Average",
+            data: sellerPriceHistoryLines[0].data.map((_, i) => {
+                let Total = 0;
+                sellerPriceHistoryLines.forEach(line => Total += line.data[i]);
+                return Total / sellerPriceHistoryLines.filter(line => line.data[i] != null).length;
+            }),
             fill: false,
-            borderColor: shades[seller.Position  % colors.length],
+            borderColor: 'rgba(255, 0, 0, 1)',
             tension: 0.1
-        }
-    });
-    sellerPriceHistoryLines.unshift({
-        label: "Average",
-        data: sellerPriceHistoryLines[0].data.map((_, i) => {
-            let Total = 0;
-            sellerPriceHistoryLines.forEach(line => Total += line.data[i]);
-            return Total / sellerPriceHistoryLines.length;
-        }),
-        fill: false,
-        borderColor: 'rgba(255, 0, 0, 1)',
-        tension: 0.1
-    });
+        });
+
+        buyerPriceHistoryLines = Buyers.map(buyer => {
+            return {
+                label: `Buyer ${buyer.Position}`,
+                data: buyer.expectedPriceHistory,
+                fill: false,
+                borderColor: shades[buyer.Position  % colors.length],
+                tension: 0.1
+            }
+        });
+        buyerPriceHistoryLines.unshift({
+            label: "Average",
+            data: buyerPriceHistoryLines[0].data.map((_, i) => {
+                let Total = 0;
+                buyerPriceHistoryLines.forEach(line => Total += line.data[i]);
+                return Total / buyerPriceHistoryLines.filter(line => line.data[i] != null).length;
+            }),
+            fill: false,
+            borderColor: 'rgba(0, 0, 255, 1)',
+            tension: 0.1
+        });
+    }
+    else if (WhichChart() == "ProfitHistory") {
+        sellerPriceHistoryLines = [{
+            label: "Total Surplus Sellers",
+            data: Array.from(Array(RoundsOfTrading).keys()).map(i => {
+                let Total = 0;
+                Sellers.forEach(seller => Total += seller.ProfitHistory[i]);
+                return Total;
+            }),
+            fill: false,
+            borderColor: 'rgba(255, 0, 0, 1)',
+            tension: 0.1
+        }];
+
+        buyerPriceHistoryLines = [{
+            label: "Total Surplus Buyers",
+            data: Array.from(Array(RoundsOfTrading).keys()).map(i => {
+                let Total = 0;
+                Buyers.forEach(buyer => Total += buyer.SurplusHistory[i]);
+                return Total;
+            }),
+            fill: false,
+            borderColor: 'rgba(0, 0, 255, 1)',
+            tension: 0.1
+        }];
+    }
+    else if (WhichChart() == "TotalProfitHistory") {
+        let TotalProfit = 0;
+        sellerPriceHistoryLines = [{
+            label: "Total Surplus Sellers",
+            data: Array.from(Array(RoundsOfTrading).keys()).map(i => {
+                let Total = 0;
+                Sellers.forEach(seller => Total += seller.ProfitHistory[i]);
+                return Total;
+            }).map(i => {
+                TotalProfit += i;
+                return TotalProfit;
+            }),
+            fill: false,
+            borderColor: 'rgba(255, 0, 0, 1)',
+            tension: 0.1
+        }];
+
+        let TotalSurplus = 0;
+
+        buyerPriceHistoryLines = [{
+            label: "Total Surplus Buyers",
+            data: Array.from(Array(RoundsOfTrading).keys()).map(i => {
+                let Total = 0;
+                Buyers.forEach(buyer => Total += buyer.SurplusHistory[i]);
+                return Total;
+            }).map(i => {
+                TotalSurplus += i;
+                return TotalSurplus;
+            }),
+            fill: false,
+            borderColor: 'rgba(0, 0, 255, 1)',
+            tension: 0.1
+        }];
+    }
+    else if (WhichChart() == "TransactionHistory") { 
+    
+        sellerPriceHistoryLines = [{
+            label: "Total Transactions",
+            data: Array.from(Array(RoundsOfTrading).keys()).map(i => {
+                let Total = 0;
+                Sellers.forEach(seller => Total += seller.TransactionsHistory[i]);
+                return Total;
+            }),
+            fill: false,
+            borderColor: 'rgba(255, 0, 0, 1)',
+            tension: 0.1
+        }];
+
+        console.log(Sellers);
+
+        buyerPriceHistoryLines = [];
+    }
+
 
     if (SellerPriceHistoryChart) SellerPriceHistoryChart.destroy();
     SellerPriceHistoryChart = new Chart(ctx2, {
@@ -232,30 +338,6 @@ function MakeGraph() {
             responsive: false
         }
     });
-
-    /*
-    let buyerPriceHistoryLines = Buyers.map(buyer => {
-        return {
-            label: `Buyer ${buyer.Position}`,
-            data: buyer.expectedPriceHistory,
-            fill: false,
-            borderColor: shades[buyer.Position  % colors.length],
-            tension: 0.1
-        }
-    });
-    buyerPriceHistoryLines.unshift({
-        label: "Average",
-        data: buyerPriceHistoryLines[0].data.map((_, i) => {
-            let Total = 0;
-            buyerPriceHistoryLines.forEach(line => Total += line.data[i]);
-            return Total / buyerPriceHistoryLines.length;
-        }),
-        fill: false,
-        borderColor: 'rgba(0, 0, 255, 1)',
-        tension: 0.1
-    });*/
-
-    let buyerPriceHistoryLines = Buyers
 
     if (BuyersChartChart) BuyersChartChart.destroy();
     BuyersChartChart = new Chart(ctx3, {

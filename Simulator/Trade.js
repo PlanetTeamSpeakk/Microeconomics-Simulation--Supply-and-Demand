@@ -3,6 +3,7 @@
 let NumberOfBuyers, NumberOfSellers;
 let Buyers = [];
 let Sellers = [];
+let SupplyShockSellers = [];
 let Transactions = 0;
 const startingPrice = 100;
 
@@ -11,16 +12,38 @@ self.importScripts("Buyer.js", "Seller.js", "OutsideInfluence.js");
 // buyer and seller attempt to do a transction
 function Trade(Rounds, HowToChooseSeller) {
     for (let Round = 0; Round < Rounds; Round++) {
+        if (Round == 500) excise();
         MarketIteration1(HowToChooseSeller);
     }
 }
 
+function SupplyShock() {
+    let sliceIndex = 40; //Math.random() * Sellers.length;
+    console.log(sliceIndex);
+    SupplyShockSellers = Sellers.slice(0, sliceIndex);
+    Sellers = Sellers.slice(sliceIndex);
+}
+
+function governmentMinPrice() { 
+    Sellers.forEach(seller => {
+        seller.absoluteMinimumAcceptable = 80;
+    });
+}
+
+function excise() { 
+    Sellers.forEach(seller => {
+        seller.MinimumAcceptable += 10;
+    });
+}
+
+
 function MarketIteration1() {
+    if (SupplyShockSellers.length > 0) Sellers.push(SupplyShockSellers.pop());
     Sellers = Shuffle(Sellers);
     Shuffle(Buyers).forEach(buyer => {
         for (let i = 0; i < Sellers.length; i++) {
             let seller = Sellers[i];
-
+            
             if (seller.MadeSale) continue;
 
             if (seller.Price <= buyer.expectedPrice) {
@@ -38,16 +61,30 @@ function MarketIteration1() {
         };
     });
 
-    Sellers.forEach(seller => {
-        seller.AdjustPrice(); //if the seller was not visited, adjust price downwards
-        seller.MadeSale = false; // reset for next round
-        seller.SummedPrices += seller.Price;
-    });
+    let SellerLeft = false;
+    let highestPrice = 0;
+    //let LowestPrice = Sellers.map(seller => seller.Price).reduce((a, b) => Math.min(a, b));
     
     Buyers.forEach(buyer => {
         buyer.AdjustExpectedPrice(); //if the seller was not visited, adjust price downwards
+        if (buyer.expectedPrice > highestPrice) highestPrice = buyer.expectedPrice;
         buyer.MadePurchase = false; // reset for next round
+        buyer.expectedPriceHistory.push(buyer.expectedPrice);
+        //else buyer.expectedPriceHistory.push(null);
     });
+
+    for (let i = 0; i < Sellers.length; i++) {
+        let seller = Sellers[i];
+        seller.AdjustPrice(); //if the seller was not visited, adjust price downwards
+        seller.MadeSale = false; // reset for next round
+        seller.SummedPrices += seller.Price;
+
+        // Delete sellers who are out of market
+        if (seller.MinimumAcceptable > highestPrice) {
+            seller.PriceHistory.push(null);
+        }
+        else seller.PriceHistory.push(seller.Price);
+    }
 }
 
 function Shuffle(list) {

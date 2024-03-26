@@ -1,7 +1,10 @@
 class Seller {
     MinimumAcceptable; // the minimum price a seller can accept for the commodity (production cost)
+    absoluteMinimumAcceptable = 0; // the minimum price a seller can accept for the commodity
     FirstPrice; // the price this seller entered the market with
     PriceHistory = []; // all prices the seller has posted since opening of market
+    ProfitHistory = []; // all profits the seller has made since opening of market
+    TransactionsHistory = []; // all transactions the seller has been involved in since opening of market
     Price; // current price the seller is posting
     SummedPrices = 0; // sum of all prices the seller has posted since opening of market 
 
@@ -26,14 +29,21 @@ class Seller {
 
     AdjustPrice() {
         if (this.MadeSale) {
+            this.ProfitHistory.push(this.Price - this.MinimumAcceptable);
+
             // price adjusted upwards if the previous transaction was successful
             this.Price += this.PriceAdjustmentFactor.Up;
+            
+            this.TransactionsHistory.push(1);
         } else {
             // price adjusted downwards if the previous transaction was not successful
-            if (this.Price + this.PriceAdjustmentFactor.Down < this.MinimumAcceptable) this.Price = this.MinimumAcceptable;
+            if (this.Price + this.PriceAdjustmentFactor.Down < this.absoluteMinimumAcceptable) this.Price = this.absoluteMinimumAcceptable;
+            else if (this.Price + this.PriceAdjustmentFactor.Down < this.MinimumAcceptable) this.Price = this.MinimumAcceptable;
             else this.Price += this.PriceAdjustmentFactor.Down;
+
+            this.ProfitHistory.push(null);
+            this.TransactionsHistory.push(0);
         }
-        this.PriceHistory.push(this.Price);
     }
 
     CompleteTransaction(SuccessfulSale) {

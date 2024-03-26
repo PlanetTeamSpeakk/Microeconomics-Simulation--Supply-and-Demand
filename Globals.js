@@ -15,6 +15,7 @@ const OutputDivData = document.getElementById("OutputDivData");
 const SellersChartCanvas = document.getElementById("SellersChartCanvas");
 const SellersPriceHistoryCanvas = document.getElementById("SellersPriceHistoryCanvas");
 const BuyersChartCanvas = document.getElementById("BuyersChartCanvas");
+const DisplayChartSelect = document.getElementById("DisplayChartSelect");
 const test = document.getElementById("test");
 
 function GetNumberOfBuyers() {
@@ -59,4 +60,8 @@ function numberWithCommas(x) {
 
 function HowToChooseSeller() {
     return HowBuyerChoosesSellerInput.value;
+}
+
+function WhichChart() {
+    return DisplayChartSelect.value;
 }

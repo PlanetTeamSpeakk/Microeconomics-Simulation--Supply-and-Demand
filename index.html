@@ -115,8 +115,14 @@
             <canvas id="SellersChartCanvas" width="auto" height="auto"></canvas>
 
             <article> <small style="color: white">Price History of Sellers</small> </article>
+            <select name="DisplayChartSelect" id="DisplayChartSelect" class="form-control"
+                style="width:auto; background-color:black; color: white">
+                <option value="PriceHistory">Price History</option>
+                <option value="ProfitHistory">Profit History</option>
+                <option value="TotalProfitHistory">Total Profit History</option>
+                <option value="TransactionHistory">Transaction History</option>
+            </select>
             <canvas id="SellersPriceHistoryCanvas" width="auto" height="auto"></canvas>
-            <article> <small style="color: white" id="test">Price History of Sellers</small> </article>
 
             <div style="overflow-x: auto;">
                 <table class="table" style="width: 90%; color: white;">

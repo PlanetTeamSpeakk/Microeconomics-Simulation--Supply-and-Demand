@@ -49,6 +49,7 @@ function GetMedianFirstPrice() {
     if (Sellers.length % 2 == 0 && Sellers.length > 2) Median = (Sellers[(Sellers.length / 2)].FirstPrice + Sellers[(Sellers.length / 2) + 1].FirstPrice) / 2;
     else if (Sellers.length == 2) Median = (Sellers[0].FirstPrice + Sellers[1].FirstPrice) / 2;
     else if (Sellers.length == 1) Median = Sellers[0].FirstPrice;
+    else if (Sellers.length == 0) Median = 0;
     else Median = Sellers[Math.ceil(Sellers.length / 2)].FirstPrice;
 
     return Math.round(Median);
@@ -61,6 +62,7 @@ function GetMedianPrice() {
     if (Sellers.length % 2 == 0 && Sellers.length > 2) Median = (Sellers[(Sellers.length / 2)].Price + Sellers[(Sellers.length / 2) + 1].Price) / 2;
     else if (Sellers.length == 2) Median = (Sellers[0].Price + Sellers[1].Price) / 2;
     else if (Sellers.length == 1) Median = Sellers[0].Price;
+    else if (Sellers.length == 0) Median = 0;
     else Median = Sellers[Math.ceil(Sellers.length / 2)].Price;
 
     return Math.round(Median);

@@ -6,11 +6,13 @@ class Buyer {
     MaximumPayable; // the maximum price a buyer can pay for the commodity
     expectedPrice; // the price the buyer expects to pay for the commodity
     expectedPriceHistory = []; // all prices the buyer has expected to pay since opening of market
+    SurplusHistory = []; // all surpluses the buyer has had since opening of market
 
     Transactions = 0; // number of transctions it is involved in
     TotalSpent = 0; // total amount spent on buying commodities from sellers
 
     MadePurchase = false; // whether the buyer has made a purchase
+    lastPaidPrice; // the price the buyer last paid for the commodity
 
     // how much the seller will adjust price depending on how the market is
     PriceAdjustmentFactor = {
@@ -32,6 +34,7 @@ class Buyer {
             this.Transactions++;
             this.TotalSpent += Price;
             this.MadePurchase = true;
+            this.lastPaidPrice = Price;
         }
     }
 
@@ -39,12 +42,15 @@ class Buyer {
         if (this.MadePurchase) {
             // price adjusted downwards if the previous transaction was successful
             this.expectedPrice += this.PriceAdjustmentFactor.Down;
+
+            this.SurplusHistory.push(this.MaximumPayable - this.lastPaidPrice);
         } else {
             // price adjusted upwards if the previous transaction was not successful
             if (this.expectedPrice + this.PriceAdjustmentFactor.Up > this.MaximumPayable) this.expectedPrice = this.MaximumPayable;
             else this.expectedPrice += this.PriceAdjustmentFactor.Up;
+            
+            this.SurplusHistory.push(null);
         }
-        this.expectedPriceHistory.push(this.expectedPrice);
     }
 
     static GetRandomAmount() {
