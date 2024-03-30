@@ -5,14 +5,14 @@ let Buyers = [];
 let Sellers = [];
 let SupplyShockSellers = [];
 let Transactions = 0;
-const startingPrice = 100;
+const startingPrice = 60;
 
 self.importScripts("Buyer.js", "Seller.js", "OutsideInfluence.js");
 
 // buyer and seller attempt to do a transction
 function Trade(Rounds, HowToChooseSeller) {
     for (let Round = 0; Round < Rounds; Round++) {
-        if (Round == 500) excise();
+        if (Round == 500) governmentMinPrice();
         MarketIteration1(HowToChooseSeller);
     }
 }
@@ -26,13 +26,13 @@ function SupplyShock() {
 
 function governmentMinPrice() { 
     Sellers.forEach(seller => {
-        seller.absoluteMinimumAcceptable = 80;
+        seller.absoluteMinimumAcceptable = 70;
     });
 }
 
 function excise() { 
     Sellers.forEach(seller => {
-        seller.MinimumAcceptable += 10;
+        seller.MinimumAcceptable += 30;
     });
 }
 

@@ -160,9 +160,9 @@ function MakeGraph() {
     ];
 
     let shades = [
-        'rgba(50, 50, 50, 1)',
-        'rgba(100, 100, 100, 1)',
-        'rgba(150, 150, 150, 1)',
+        'rgba(140, 140, 140, 1)',
+        'rgba(160, 160, 160, 1)',
+        'rgba(180, 180, 180, 1)',
         'rgba(200, 200, 200, 1)',
     ];
 
@@ -194,8 +194,11 @@ function MakeGraph() {
     // display custom charts
     let sellerPriceHistoryLines;
     let buyerPriceHistoryLines;
+    let labely = "Price";
 
     if (WhichChart() == "PriceHistory") {
+        labely = "Price";
+
         sellerPriceHistoryLines = Sellers.map(seller => {
             return {
                 label: `Seller ${seller.Position}`,
@@ -239,6 +242,8 @@ function MakeGraph() {
         });
     }
     else if (WhichChart() == "ProfitHistory") {
+        labely = "Profit";
+
         sellerPriceHistoryLines = [{
             label: "Total Surplus Sellers",
             data: Array.from(Array(RoundsOfTrading).keys()).map(i => {
@@ -264,6 +269,7 @@ function MakeGraph() {
         }];
     }
     else if (WhichChart() == "TotalProfitHistory") {
+        labely = "Profit";
         let TotalProfit = 0;
         sellerPriceHistoryLines = [{
             label: "Total Surplus Sellers",
@@ -294,10 +300,12 @@ function MakeGraph() {
             }),
             fill: false,
             borderColor: 'rgba(0, 0, 255, 1)',
-            tension: 0.1
+            tension: 0.1,
         }];
     }
     else if (WhichChart() == "TransactionHistory") { 
+        labely = "Transactions";
+        let TotalTransactions = 0;
     
         sellerPriceHistoryLines = [{
             label: "Total Transactions",
@@ -305,6 +313,9 @@ function MakeGraph() {
                 let Total = 0;
                 Sellers.forEach(seller => Total += seller.TransactionsHistory[i]);
                 return Total;
+            }).map(i => {
+                TotalTransactions += i;
+                return TotalTransactions;
             }),
             fill: false,
             borderColor: 'rgba(255, 0, 0, 1)',
@@ -325,15 +336,48 @@ function MakeGraph() {
             datasets: sellerPriceHistoryLines
         },
         options: {
+            elements : {
+                point: {
+                    pointStyle: false
+                }
+            },
             scales: {
-                yAxes: [{
+                y: {
                     ticks: {
-                        beginAtZero: true
+                        maxTicksLimit: 20,
+                        font: {
+                            size: 25
+                        }
+                    },
+                    title: {
+                        text: labely,
+                        display: true,
+                        font: {
+                            size: 25
+                        }
                     }
-                }]
+                },
+                x: {
+                    ticks: {
+                        maxTicksLimit: 20,
+                        font: {
+                            size: 25
+                        }
+                    },
+                    title: {
+                        text: "Iterations",
+                        display: true,
+                        font: {
+                            size: 25
+                        }
+                    }
+                }
             },
             legend: {
                 display: false
+            },
+            plugins: {
+                legend: false
             },
             responsive: false
         }
@@ -347,12 +391,45 @@ function MakeGraph() {
             datasets: buyerPriceHistoryLines
         },
         options: {
+            elements : {
+                point: {
+                    pointStyle: false
+                }
+            },
             scales: {
-                yAxes: [{
+                y: {
                     ticks: {
-                        beginAtZero: true
+                        maxTicksLimit: 20,
+                        font: {
+                            size: 25
+                        }
+                    },
+                    title: {
+                        text: labely,
+                        display: true,
+                        font: {
+                            size: 25
+                        }
                     }
-                }]
+                },
+                x: {
+                    ticks: {
+                        maxTicksLimit: 20,
+                        font: {
+                            size: 25
+                        }
+                    },
+                    title: {
+                        text: "Iterations",
+                        display: true,
+                        font: {
+                            size: 25
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: false
             },
             legend: {
                 display: false
