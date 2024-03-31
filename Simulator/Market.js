@@ -9,15 +9,11 @@ let Influences = [];
 
 let Transactions = 0;
 
-
-
 function InitializeVariables() {
     NumberOfBuyers = GetNumberOfBuyers();
     NumberOfSellers = GetNumberOfSellers();
     RoundsOfTrading = GetNumberOfTradingRounds();
 
-    Buyers = [];
-    Sellers = [];
     Influences = [];
 }
 
@@ -79,10 +75,14 @@ function StartMarket() {
     //create a worker to do the trading
     let TradeWorker = new Worker("Simulator/Trade.js");
     TradeWorker.postMessage({
+        Buyers: Buyers,
+        Sellers: Sellers,
         NumberOfBuyers: NumberOfBuyers,
         NumberOfSellers: NumberOfSellers,
         HowToChooseSeller: HowToChooseSeller(),
-        RoundsOfTrading: RoundsOfTrading
+        RoundsOfTrading: RoundsOfTrading,
+        StartingPrice: getStartingPrice(),
+        lockSellersAndBuyers: keepSellersAndBuyers()
     })
 
     // after trading done

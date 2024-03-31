@@ -16,6 +16,8 @@ const SellersChartCanvas = document.getElementById("SellersChartCanvas");
 const SellersPriceHistoryCanvas = document.getElementById("SellersPriceHistoryCanvas");
 const BuyersChartCanvas = document.getElementById("BuyersChartCanvas");
 const DisplayChartSelect = document.getElementById("DisplayChartSelect");
+const startingPriceInput = document.getElementById("startingPriceInput");
+const keepSellersAndBuyersCheckbox = document.getElementById("keepSellersAndBuyersCheckbox");
 const test = document.getElementById("test");
 
 function GetNumberOfBuyers() {
@@ -60,6 +62,22 @@ function numberWithCommas(x) {
 
 function HowToChooseSeller() {
     return HowBuyerChoosesSellerInput.value;
+}
+
+function getStartingPrice() {
+    let Default = 60;
+    let startingPrice = parseInt(startingPriceInput.value);
+
+    if (startingPrice < 0 || isNaN(startingPrice)) {
+        startingPriceInput.value = Default;
+        return Default;
+    } else {
+        return startingPrice;
+    }
+}
+
+function keepSellersAndBuyers() {
+    return keepSellersAndBuyersCheckbox.checked;
 }
 
 function WhichChart() {

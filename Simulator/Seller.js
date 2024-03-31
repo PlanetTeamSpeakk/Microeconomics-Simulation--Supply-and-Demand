@@ -36,10 +36,11 @@ class Seller {
             
             this.TransactionsHistory.push(1);
         } else {
+            this.Price += this.PriceAdjustmentFactor.Down;
+            
             // price adjusted downwards if the previous transaction was not successful
-            if (this.Price + this.PriceAdjustmentFactor.Down < this.absoluteMinimumAcceptable) this.Price = this.absoluteMinimumAcceptable;
-            else if (this.Price + this.PriceAdjustmentFactor.Down < this.MinimumAcceptable) this.Price = this.MinimumAcceptable;
-            else this.Price += this.PriceAdjustmentFactor.Down;
+            if (this.Price < this.absoluteMinimumAcceptable) this.Price = this.absoluteMinimumAcceptable;
+            else if (this.Price < this.MinimumAcceptable) this.Price = this.MinimumAcceptable;
 
             this.ProfitHistory.push(null);
             this.TransactionsHistory.push(0);

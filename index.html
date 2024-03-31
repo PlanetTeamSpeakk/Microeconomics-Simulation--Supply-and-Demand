@@ -45,13 +45,31 @@
                 </td>
             </tr>
             <tr>
-                <td>How buyer chooses seller:</td>
+                <td>Event:</td>
                 <td>
                     <select name="HowBuyerChoosesSellerInput" id="HowBuyerChoosesSellerInput" class="form-control"
                         style="background-color: black; width: 70%;">
-                        <option value="CheapestPrice">Cheapest price</option>
-                        <option value="Randomly">Randomly</option>
+                        <option value="None">None</option>
+                        <option value="Supply Shock">Supply Shock</option>
+                        <option value="Minimum Price">Minimum Price</option>
+                        <option value="Excise">Excise</option>
                     </select>
+                </td>
+            </tr>
+            
+            <tr>
+                <td>starting price:</td>
+                <td>
+                    <input id="startingPriceInput" type="number" value="60"  class="form-control"
+                        style="background-color: black; width: 70%;">
+                </td>
+            </tr>
+
+            <tr>
+                <td>Keep same buyers and sellers:</td>
+                <td>
+                    <input id="keepSellersAndBuyersCheckbox" type="checkbox" class="form-control"
+                        style="background-color: black; width: 70%;">
                 </td>
             </tr>
 

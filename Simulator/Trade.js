@@ -5,21 +5,28 @@ let Buyers = [];
 let Sellers = [];
 let SupplyShockSellers = [];
 let Transactions = 0;
-const startingPrice = 60;
 
 // Market shock variables
 let RecoverySchedule = [];
 let RecoveryIterations = 100;
 let RecoveryFactor = 1;
 
+// Government variables
+GovMinPrice = 70;
+
 
 self.importScripts("Buyer.js", "Seller.js", "OutsideInfluence.js");
 
 // buyer and seller attempt to do a transction
-function Trade(Rounds, HowToChooseSeller) {
+function Trade(Rounds, Event) {
     for (let Round = 0; Round < Rounds; Round++) {
-        if (Round == 500) SupplyShock();
-        MarketIteration1(HowToChooseSeller);
+        
+        if (Round == 500) {
+            if (Event == "Supply Shock") SupplyShock();
+            else if (Event == "Excise") excise();
+            else if (Event == "Minimum Price") governmentMinPrice();
+        }
+        MarketIteration1();
     }
 }
 
@@ -30,7 +37,6 @@ function SupplyShock() {
     SupplyShockSellers = Sellers.slice(0, sliceIndex);
     Sellers = Sellers.slice(sliceIndex);
     RecoverySchedule = MakeRecoverySchedule(RecoveryIterations, sliceIndex, RecoveryFactor);
-    console.log(RecoverySchedule);
 }
 
 function MakeRecoverySchedule(i, a, t) {
@@ -48,7 +54,7 @@ function MakeRecoverySchedule(i, a, t) {
 
 function governmentMinPrice() { 
     Sellers.forEach(seller => {
-        seller.absoluteMinimumAcceptable = 70;
+        if (seller.absoluteMinimumAcceptable < GovMinPrice) seller.absoluteMinimumAcceptable = GovMinPrice;
     });
 }
 
@@ -84,7 +90,6 @@ function MarketIteration1() {
         };
     });
 
-    let SellerLeft = false;
     let highestPrice = 0;
     //let LowestPrice = Sellers.map(seller => seller.Price).reduce((a, b) => Math.min(a, b));
     
@@ -120,68 +125,57 @@ function Shuffle(list) {
     return list.slice().sort(() => Math.random() - 0.5);
 }
 
-function MarketIteration(HowToChooseSeller) {
-    Shuffle(Buyers).forEach(buyer => {
-        let seller;
-        if (HowToChooseSeller == "Randomly") {
-            seller = GetRandomSeller();
-        } else {
-            seller = Sellers.filter(seller => !seller.MadeSale).sort((a, b) => a.Price - b.Price)[0];
-        }
-
-        if (seller == undefined) return;
-
-        if (seller.Price <= buyer.expectedPrice) {
-            // successful transaction
-            buyer.CompleteTransaction(true, seller.Price);
-            seller.CompleteTransaction(true);
-
-            Transactions++;
-
-        } else {
-            // transaction not successful
-            seller.CompleteTransaction(false);
-            buyer.CompleteTransaction(false);
-        }
-    });
-
-    Sellers.forEach(seller => {
-        seller.AdjustPrice(); //if the seller was not visited, adjust price downwards
-        seller.MadeSale = false; // reset for next round
-        seller.SummedPrices += seller.Price;
-    });
-    
-    Buyers.forEach(buyer => {
-        buyer.AdjustExpectedPrice(); //if the seller was not visited, adjust price downwards
-        buyer.MadePurchase = false; // reset for next round
-    });
-}
-
 function GetRandomSeller() {
     let RandomSeller = Math.round(Math.random() * (Sellers.length - 1));
     return Sellers[RandomSeller];
 }
 
-/*
-function GetRandomSeller() {
-    SellersLeft = Sellers.filter(seller => !seller.MadeSale);
-    let RandomSeller = Math.round(Math.random() * (SellersLeft.length - 1));
-    return SellersLeft[RandomSeller];
-}*/
 
+function CreateTraders(NumberOfBuyers, NumberOfSellers, startingPrice, lockSellersAndBuyers, OldBuyers, OldSellers) {
+    if (!lockSellersAndBuyers) {
+        Buyers = [];
+        Sellers = [];
+    }
 
-function CreateTraders(NumberOfBuyers, NumberOfSellers) {
-    for (let i = 0; i < NumberOfBuyers; i++) Buyers.push(new Buyer(startingPrice));
-    for (let i = 0; i < NumberOfSellers; i++) Sellers.push(new Seller(startingPrice));
+    console.log("number of buyers: " + NumberOfBuyers + " number of sellers: " + NumberOfSellers + " starting price: " + startingPrice + " lock: " + lockSellersAndBuyers + " buyers: " + Buyers.length + " sellers: " + Sellers.length + "");
+    if (NumberOfBuyers == OldBuyers.length) {
+        Buyers = [];
+        for (let i = 0; i < NumberOfBuyers; i++) {
+            Buyers.push(new Buyer(startingPrice));
+            Buyers[i].MaximumPayable = OldBuyers[i].MaximumPayable;
+        }
+    }
+    else {
+        console.log("Creating buyers"); 
+        Buyers = [];
+        for (let i = 0; i < NumberOfBuyers; i++) Buyers.push(new Buyer(startingPrice));
+    }
+
+    if (NumberOfSellers == OldSellers.length) {
+        Sellers = [];
+        for (let i = 0; i < NumberOfSellers; i++) {
+            Sellers.push(new Seller(startingPrice));
+            Sellers[i].MinimumAcceptable = OldSellers[i].MinimumAcceptable;
+        };
+    }
+    else {
+        console.log("Creating sellers");
+        Sellers = [];
+        for (let i = 0; i < NumberOfSellers; i++) Sellers.push(new Seller(startingPrice));
+    }
 }
 
 onmessage = function (e) {
+    const OldBuyers = e.data.Buyers;
+    const OldSellers = e.data.Sellers;
     const NumberOfBuyers = e.data.NumberOfBuyers;
     const NumberOfSellers = e.data.NumberOfSellers;
     const HowToChooseSeller = e.data.HowToChooseSeller;
     const RoundsOfTrading = e.data.RoundsOfTrading;
+    const StartingPrice = e.data.StartingPrice;
+    const lockSellersAndBuyers = e.data.lockSellersAndBuyers;
 
-    CreateTraders(NumberOfBuyers, NumberOfSellers)
+    CreateTraders(NumberOfBuyers, NumberOfSellers, StartingPrice, lockSellersAndBuyers, OldBuyers, OldSellers);
 
     Trade(RoundsOfTrading, HowToChooseSeller);
 

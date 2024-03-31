@@ -333,8 +333,6 @@ function MakeGraph() {
             tension: 0.1
         }];
 
-        console.log(Sellers);
-
         buyerPriceHistoryLines = [];
     }
 
@@ -451,7 +449,6 @@ function MakeGraph() {
 }
 
 function PrintDataForLatex(data) {
-    console.log(data);
     dataString = "x    f(x)\n";
     for (let i = 0; i < data.length; i++) {
         dataString += `${i} ${data[i]}\n`;
