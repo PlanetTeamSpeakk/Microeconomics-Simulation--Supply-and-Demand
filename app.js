@@ -208,13 +208,21 @@ function MakeGraph() {
                 tension: 0.1
             }
         });
+        AverageDataSellers = sellerPriceHistoryLines[0].data.map((_, i) => {
+            let Total = 0;
+            sellerPriceHistoryLines.forEach(line => Total += line.data[i]);
+            let Length = sellerPriceHistoryLines.filter(line => line.data[i] != null).length;
+            if (Length == 0) {
+                return null;
+            }
+            return Total / Length;
+        });
+
+        PrintDataForLatex(AverageDataSellers);
+
         sellerPriceHistoryLines.unshift({
             label: "Average",
-            data: sellerPriceHistoryLines[0].data.map((_, i) => {
-                let Total = 0;
-                sellerPriceHistoryLines.forEach(line => Total += line.data[i]);
-                return Total / sellerPriceHistoryLines.filter(line => line.data[i] != null).length;
-            }),
+            data: AverageDataSellers,
             fill: false,
             borderColor: 'rgba(255, 0, 0, 1)',
             tension: 0.1
@@ -229,13 +237,16 @@ function MakeGraph() {
                 tension: 0.1
             }
         });
+
+        AverageDataBuyers = buyerPriceHistoryLines[0].data.map((_, i) => {
+            let Total = 0;
+            buyerPriceHistoryLines.forEach(line => Total += line.data[i]);
+            return Total / buyerPriceHistoryLines.filter(line => line.data[i] != null).length;
+        });
+
         buyerPriceHistoryLines.unshift({
             label: "Average",
-            data: buyerPriceHistoryLines[0].data.map((_, i) => {
-                let Total = 0;
-                buyerPriceHistoryLines.forEach(line => Total += line.data[i]);
-                return Total / buyerPriceHistoryLines.filter(line => line.data[i] != null).length;
-            }),
+            data: AverageDataBuyers,
             fill: false,
             borderColor: 'rgba(0, 0, 255, 1)',
             tension: 0.1
@@ -437,4 +448,13 @@ function MakeGraph() {
             responsive: false
         }
     });
+}
+
+function PrintDataForLatex(data) {
+    console.log(data);
+    dataString = "x    f(x)\n";
+    for (let i = 0; i < data.length; i++) {
+        dataString += `${i} ${data[i]}\n`;
+    }
+    console.log(dataString);
 }

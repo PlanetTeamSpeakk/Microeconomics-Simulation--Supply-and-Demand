@@ -7,21 +7,43 @@ let SupplyShockSellers = [];
 let Transactions = 0;
 const startingPrice = 60;
 
+// Market shock variables
+let RecoverySchedule = [];
+let RecoveryIterations = 100;
+let RecoveryFactor = 1;
+
+
 self.importScripts("Buyer.js", "Seller.js", "OutsideInfluence.js");
 
 // buyer and seller attempt to do a transction
 function Trade(Rounds, HowToChooseSeller) {
     for (let Round = 0; Round < Rounds; Round++) {
-        if (Round == 500) governmentMinPrice();
+        if (Round == 500) SupplyShock();
         MarketIteration1(HowToChooseSeller);
     }
 }
 
 function SupplyShock() {
+
     let sliceIndex = 40; //Math.random() * Sellers.length;
     console.log(sliceIndex);
     SupplyShockSellers = Sellers.slice(0, sliceIndex);
     Sellers = Sellers.slice(sliceIndex);
+    RecoverySchedule = MakeRecoverySchedule(RecoveryIterations, sliceIndex, RecoveryFactor);
+    console.log(RecoverySchedule);
+}
+
+function MakeRecoverySchedule(i, a, t) {
+    list = [];
+    
+    previousValue = 0;
+    for (x = 0; x < i; x++) {
+        value = a * Math.pow(((x + 1) / i), t)
+        list.push(Math.round(value) - previousValue);
+        previousValue = Math.round(value);
+    }
+    
+    return list;
 }
 
 function governmentMinPrice() { 
@@ -38,7 +60,8 @@ function excise() {
 
 
 function MarketIteration1() {
-    if (SupplyShockSellers.length > 0) Sellers.push(SupplyShockSellers.pop());
+    if (SupplyShockSellers.length > 0) Sellers = Sellers.concat(SupplyShockSellers.splice(0, RecoverySchedule.shift()));
+
     Sellers = Shuffle(Sellers);
     Shuffle(Buyers).forEach(buyer => {
         for (let i = 0; i < Sellers.length; i++) {
@@ -85,6 +108,12 @@ function MarketIteration1() {
         }
         else seller.PriceHistory.push(seller.Price);
     }
+
+    SupplyShockSellers.forEach(seller => {
+        seller.PriceHistory.push(null);
+        seller.ProfitHistory.push(null);
+        seller.TransactionsHistory.push(0);
+    });
 }
 
 function Shuffle(list) {
