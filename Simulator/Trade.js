@@ -7,12 +7,16 @@ let SupplyShockSellers = [];
 let Transactions = 0;
 
 // Market shock variables
+let noSellersToRemove = 40;
 let RecoverySchedule = [];
 let RecoveryIterations = 100;
 let RecoveryFactor = 1;
 
 // Government variables
 GovMinPrice = 70;
+
+// Excise variables
+let exciseTax = 30;
 
 
 self.importScripts("Buyer.js", "Seller.js", "OutsideInfluence.js");
@@ -32,7 +36,7 @@ function Trade(Rounds, Event) {
 
 function SupplyShock() {
 
-    let sliceIndex = 40; //Math.random() * Sellers.length;
+    let sliceIndex = noSellersToRemove; //Math.random() * Sellers.length;
     console.log(sliceIndex);
     SupplyShockSellers = Sellers.slice(0, sliceIndex);
     Sellers = Sellers.slice(sliceIndex);
@@ -60,7 +64,7 @@ function governmentMinPrice() {
 
 function excise() { 
     Sellers.forEach(seller => {
-        seller.MinimumAcceptable += 30;
+        seller.MinimumAcceptable += exciseTax;
     });
 }
 
@@ -174,6 +178,15 @@ onmessage = function (e) {
     const RoundsOfTrading = e.data.RoundsOfTrading;
     const StartingPrice = e.data.StartingPrice;
     const lockSellersAndBuyers = e.data.lockSellersAndBuyers;
+    const EventValues = e.data.EventValues;
+    exciseTax = EventValues.Excise;
+    noSellersToRemove = EventValues.SupplyShock;
+    GovMinPrice = EventValues.MinimumPrice;
+    RecoveryFactor = EventValues.Factor;
+    RecoveryIterations = EventValues.RecoveryTime;
+
+
+    console.log("Excise tax: " + exciseTax);
 
     CreateTraders(NumberOfBuyers, NumberOfSellers, StartingPrice, lockSellersAndBuyers, OldBuyers, OldSellers);
 

@@ -2,10 +2,26 @@ RunSimulationBtn.addEventListener("click", StartMarket);
 BuyersDisplayFilter.addEventListener("change", DisplayOutput);
 SellersDisplayFilter.addEventListener("change", DisplayOutput);
 DisplayChartSelect.addEventListener("change", DisplayOutput);
+HowBuyerChoosesSellerInput.addEventListener("change", ShowEventmenu);
 
 var currentChart;
 var SellerPriceHistoryChart;
 var BuyersChartChart;
+
+function ShowEventmenu() {
+    for (let i = 0; i < document.getElementsByClassName("EventMenu").length; i++) document.getElementsByClassName("EventMenu")[i].style.display = "none";
+
+    if (HowBuyerChoosesSellerInput.value == "Supply Shock") {
+        for (let i = 0; i < document.getElementsByClassName("SupplyShockMenu").length; i++) document.getElementsByClassName("SupplyShockMenu")[i].style.display = "table-row";
+    }
+    else if (HowBuyerChoosesSellerInput.value == "Minimum Price") {
+        for (let i = 0; i < document.getElementsByClassName("MinimumPriceMenu").length; i++) document.getElementsByClassName("MinimumPriceMenu")[i].style.display = "table-row";
+    }
+    else if (HowBuyerChoosesSellerInput.value == "Excise") {
+        for (let i = 0; i < document.getElementsByClassName("ExciseMenu").length; i++) document.getElementsByClassName("ExciseMenu")[i].style.display = "table-row";
+    }
+
+}
 
 // show data about the market
 function DisplayOutput() {

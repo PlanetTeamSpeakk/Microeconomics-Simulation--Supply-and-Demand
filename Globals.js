@@ -18,7 +18,13 @@ const BuyersChartCanvas = document.getElementById("BuyersChartCanvas");
 const DisplayChartSelect = document.getElementById("DisplayChartSelect");
 const startingPriceInput = document.getElementById("startingPriceInput");
 const keepSellersAndBuyersCheckbox = document.getElementById("keepSellersAndBuyersCheckbox");
+const ExciseInput = document.getElementById("ExciseInput");
+const MinimumPriceInput = document.getElementById("MinimumPriceInput");
+const SupplyShockInput = document.getElementById("SupplyShockInput");
+const FactorInput = document.getElementById("FactorInput");
+const RecoveryTimeInput = document.getElementById("RecoveryTimeInput");
 const test = document.getElementById("test");
+
 
 function GetNumberOfBuyers() {
     let Default = 50;
@@ -73,6 +79,27 @@ function getStartingPrice() {
         return Default;
     } else {
         return startingPrice;
+    }
+}
+
+function getEventValues() {
+    return {
+        Excise: getIntValue(ExciseInput, 0),
+        MinimumPrice: getIntValue(MinimumPriceInput, 0),
+        SupplyShock: getIntValue(SupplyShockInput, 0),
+        Factor: getIntValue(FactorInput, 0),
+        RecoveryTime: getIntValue(RecoveryTimeInput, 0)
+    };
+}
+
+function getIntValue(input, defaultValue) {
+    let value = parseInt(input.value);
+
+    if (value < 0 || isNaN(value)) {
+        input.value = defaultValue;
+        return defaultValue;
+    } else {
+        return value;
     }
 }
 

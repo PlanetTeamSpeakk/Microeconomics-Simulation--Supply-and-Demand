@@ -82,7 +82,8 @@ function StartMarket() {
         HowToChooseSeller: HowToChooseSeller(),
         RoundsOfTrading: RoundsOfTrading,
         StartingPrice: getStartingPrice(),
-        lockSellersAndBuyers: keepSellersAndBuyers()
+        lockSellersAndBuyers: keepSellersAndBuyers(),
+        EventValues: getEventValues()
     })
 
     // after trading done
