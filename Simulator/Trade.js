@@ -24,6 +24,7 @@ self.importScripts("Buyer.js", "Seller.js", "OutsideInfluence.js");
 // buyer and seller attempt to do a transction
 function Trade(Rounds, Event) {
     for (let Round = 0; Round < Rounds; Round++) {
+        console.log("Round: " + Round);
         
         if (Round == 500) {
             if (Event == "Supply Shock") SupplyShock();
@@ -64,7 +65,7 @@ function governmentMinPrice() {
 
 function excise() { 
     Sellers.forEach(seller => {
-        seller.MinimumAcceptable += exciseTax;
+        seller.sellerExciseTax = exciseTax;
     });
 }
 
@@ -112,7 +113,7 @@ function MarketIteration1() {
         seller.SummedPrices += seller.Price;
 
         // Delete sellers who are out of market
-        if (seller.MinimumAcceptable > highestPrice) {
+        if (seller.MinimumAcceptable + seller.sellerExciseTax > highestPrice) {
             seller.PriceHistory.push(null);
         }
         else seller.PriceHistory.push(seller.Price);
@@ -141,7 +142,6 @@ function CreateTraders(NumberOfBuyers, NumberOfSellers, startingPrice, lockSelle
         Sellers = [];
     }
 
-    console.log("number of buyers: " + NumberOfBuyers + " number of sellers: " + NumberOfSellers + " starting price: " + startingPrice + " lock: " + lockSellersAndBuyers + " buyers: " + Buyers.length + " sellers: " + Sellers.length + "");
     if (NumberOfBuyers == OldBuyers.length) {
         Buyers = [];
         for (let i = 0; i < NumberOfBuyers; i++) {
@@ -184,9 +184,6 @@ onmessage = function (e) {
     GovMinPrice = EventValues.MinimumPrice;
     RecoveryFactor = EventValues.Factor;
     RecoveryIterations = EventValues.RecoveryTime;
-
-
-    console.log("Excise tax: " + exciseTax);
 
     CreateTraders(NumberOfBuyers, NumberOfSellers, StartingPrice, lockSellersAndBuyers, OldBuyers, OldSellers);
 

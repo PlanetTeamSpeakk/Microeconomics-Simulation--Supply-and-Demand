@@ -1,6 +1,7 @@
 class Seller {
     MinimumAcceptable; // the minimum price a seller can accept for the commodity (production cost)
     absoluteMinimumAcceptable = 0; // the minimum price a seller can accept for the commodity
+    sellerExciseTax = 0; // the tax imposed on the seller by the government
     FirstPrice; // the price this seller entered the market with
     PriceHistory = []; // all prices the seller has posted since opening of market
     ProfitHistory = []; // all profits the seller has made since opening of market
@@ -29,7 +30,7 @@ class Seller {
 
     AdjustPrice() {
         if (this.MadeSale) {
-            this.ProfitHistory.push(this.Price - this.MinimumAcceptable);
+            this.ProfitHistory.push(this.Price - (this.MinimumAcceptable + this.sellerExciseTax));
 
             // price adjusted upwards if the previous transaction was successful
             this.Price += this.PriceAdjustmentFactor.Up;
@@ -39,8 +40,8 @@ class Seller {
             this.Price += this.PriceAdjustmentFactor.Down;
             
             // price adjusted downwards if the previous transaction was not successful
-            if (this.Price < this.absoluteMinimumAcceptable) this.Price = this.absoluteMinimumAcceptable;
-            else if (this.Price < this.MinimumAcceptable) this.Price = this.MinimumAcceptable;
+            if (this.Price < this.absoluteMinimumAcceptable + this.sellerExciseTax) this.Price = this.absoluteMinimumAcceptable + this.sellerExciseTax;
+            else if (this.Price < this.MinimumAcceptable + this.sellerExciseTax) this.Price = this.MinimumAcceptable + this.sellerExciseTax;
 
             this.ProfitHistory.push(null);
             this.TransactionsHistory.push(0);

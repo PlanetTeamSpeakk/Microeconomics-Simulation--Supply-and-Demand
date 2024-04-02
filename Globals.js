@@ -87,13 +87,24 @@ function getEventValues() {
         Excise: getIntValue(ExciseInput, 0),
         MinimumPrice: getIntValue(MinimumPriceInput, 0),
         SupplyShock: getIntValue(SupplyShockInput, 0),
-        Factor: getIntValue(FactorInput, 0),
+        Factor: getFloatValue(FactorInput, 0),
         RecoveryTime: getIntValue(RecoveryTimeInput, 0)
     };
 }
 
 function getIntValue(input, defaultValue) {
     let value = parseInt(input.value);
+
+    if (value < 0 || isNaN(value)) {
+        input.value = defaultValue;
+        return defaultValue;
+    } else {
+        return value;
+    }
+}
+
+function getFloatValue(input, defaultValue) {
+    let value = parseFloat(input.value);
 
     if (value < 0 || isNaN(value)) {
         input.value = defaultValue;
