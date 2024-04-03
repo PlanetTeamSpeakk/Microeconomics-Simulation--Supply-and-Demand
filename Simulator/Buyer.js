@@ -12,7 +12,7 @@ class Buyer {
     TotalSpent = 0; // total amount spent on buying commodities from sellers
 
     MadePurchase = false; // whether the buyer has made a purchase
-    lastPaidPrice; // the price the buyer last paid for the commodity
+    lastPaidPrice = 0; // the price the buyer last paid for the commodity
 
     // how much the seller will adjust price depending on how the market is
     PriceAdjustmentFactor = {

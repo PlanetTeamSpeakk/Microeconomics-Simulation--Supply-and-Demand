@@ -234,7 +234,7 @@ function MakeGraph() {
             return Total / Length;
         });
 
-        PrintDataForLatex(AverageDataSellers);
+        //PrintDataForLatex(AverageDataSellers);
 
         sellerPriceHistoryLines.unshift({
             label: "Average",

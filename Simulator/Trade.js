@@ -14,6 +14,7 @@ let RecoveryFactor = 1;
 
 // Government variables
 GovMinPrice = 70;
+firstround = true; //Debugging variable
 
 // Excise variables
 let exciseTax = 30;
@@ -31,6 +32,7 @@ function Trade(Rounds, Event) {
             else if (Event == "Minimum Price") governmentMinPrice();
         }
         MarketIteration1();
+        firstround = false;
     }
 }
 
@@ -83,6 +85,7 @@ function MarketIteration1() {
                 // successful transaction
                 buyer.CompleteTransaction(true, seller.Price);
                 seller.CompleteTransaction(true);
+                if (firstround) console.log("seller price:" + seller.Price + ", Buyer expected price:" + buyer.expectedPrice + ", buyer maximum acceptable price:" + buyer.MaximumPayable + ", buyer last paid price: " + buyer.lastPaidPrice);
 
                 Transactions++;
                 break;
@@ -141,11 +144,12 @@ function CreateTraders(NumberOfBuyers, NumberOfSellers, startingPrice, lockSelle
         Sellers = [];
     }
 
-    if (NumberOfBuyers == OldBuyers.length) {
+    if (NumberOfBuyers == OldBuyers.length && lockSellersAndBuyers) {
         Buyers = [];
         for (let i = 0; i < NumberOfBuyers; i++) {
             Buyers.push(new Buyer(startingPrice));
             Buyers[i].MaximumPayable = OldBuyers[i].MaximumPayable;
+            if (Buyers[i].expectedPrice > Buyers[i].MaximumPayable) Buyers[i].expectedPrice = Buyers[i].MaximumPayable;
         }
     }
     else {
@@ -154,11 +158,12 @@ function CreateTraders(NumberOfBuyers, NumberOfSellers, startingPrice, lockSelle
         for (let i = 0; i < NumberOfBuyers; i++) Buyers.push(new Buyer(startingPrice));
     }
 
-    if (NumberOfSellers == OldSellers.length) {
+    if (NumberOfSellers == OldSellers.length && lockSellersAndBuyers) {
         Sellers = [];
         for (let i = 0; i < NumberOfSellers; i++) {
             Sellers.push(new Seller(startingPrice));
             Sellers[i].MinimumAcceptable = OldSellers[i].MinimumAcceptable;
+            if (Sellers[i].Price > Sellers[i].MinimumAcceptable) Sellers[i].Price = Sellers[i].MinimumAcceptable;
         };
     }
     else {
