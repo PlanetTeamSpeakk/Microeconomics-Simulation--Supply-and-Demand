@@ -163,7 +163,7 @@ function CreateTraders(NumberOfBuyers, NumberOfSellers, startingPrice, lockSelle
         for (let i = 0; i < NumberOfSellers; i++) {
             Sellers.push(new Seller(startingPrice));
             Sellers[i].MinimumAcceptable = OldSellers[i].MinimumAcceptable;
-            if (Sellers[i].Price > Sellers[i].MinimumAcceptable) Sellers[i].Price = Sellers[i].MinimumAcceptable;
+            if (Sellers[i].Price < Sellers[i].MinimumAcceptable) Sellers[i].Price = Sellers[i].MinimumAcceptable;
         };
     }
     else {
