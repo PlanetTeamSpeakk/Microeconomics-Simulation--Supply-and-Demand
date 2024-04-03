@@ -314,7 +314,7 @@ function MakeGraph() {
         }];
         
         console.log("Seller Total Profit");
-        PrintDataForLatex(sellerPriceHistoryLines);
+        PrintDataForLatex(sellerPriceHistoryLines[0].data);
 
         let TotalSurplus = 0;
 
@@ -334,7 +334,7 @@ function MakeGraph() {
         }];
         
         console.log("Buyer Total Profit");
-        PrintDataForLatex(buyerPriceHistoryLines);
+        PrintDataForLatex(buyerPriceHistoryLines[0].data);
     }
     else if (WhichChart() == "TransactionHistory") { 
         labely = "Transactions";

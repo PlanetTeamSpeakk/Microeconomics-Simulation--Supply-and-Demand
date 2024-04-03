@@ -24,7 +24,6 @@ self.importScripts("Buyer.js", "Seller.js", "OutsideInfluence.js");
 // buyer and seller attempt to do a transction
 function Trade(Rounds, Event) {
     for (let Round = 0; Round < Rounds; Round++) {
-        console.log("Round: " + Round);
         
         if (Round == 500) {
             if (Event == "Supply Shock") SupplyShock();
