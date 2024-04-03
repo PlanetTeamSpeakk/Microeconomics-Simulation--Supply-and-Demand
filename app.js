@@ -312,6 +312,9 @@ function MakeGraph() {
             borderColor: 'rgba(255, 0, 0, 1)',
             tension: 0.1
         }];
+        
+        console.log("Seller Total Profit");
+        PrintDataForLatex(sellerPriceHistoryLines);
 
         let TotalSurplus = 0;
 
@@ -329,6 +332,9 @@ function MakeGraph() {
             borderColor: 'rgba(0, 0, 255, 1)',
             tension: 0.1,
         }];
+        
+        console.log("Buyer Total Profit");
+        PrintDataForLatex(buyerPriceHistoryLines);
     }
     else if (WhichChart() == "TransactionHistory") { 
         labely = "Transactions";
